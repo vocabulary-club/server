@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.Map;
 
 @RestController
-@RequestMapping("/api/home")
+@RequestMapping("")
 public class HomeController {
 
     private final HomeService homeService;
@@ -18,7 +18,7 @@ public class HomeController {
         this.homeService = homeService;
     }
 
-    @PostMapping("/select")
+    @PostMapping("/")
     public Object select(@RequestBody Map<String, Object> data) {
         return homeService.select(data);
     }

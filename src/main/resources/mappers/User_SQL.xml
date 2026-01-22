@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="web.server.api.mapper.UserMapper">
+
+	<select id="selectByUsername" resultType="web.server.api.entity.UserEntity" parameterType="String">
+        SELECT * FROM voc_user WHERE username = #{username};
+    </select>
+    
+    <insert id="insert" parameterType="web.server.api.entity.UserEntity">
+    	INSERT INTO voc_user (username, password, role)
+			VALUES (#{username}, #{password}, #{role});
+    </insert>
+
+    <select id="existsByUsername" resultType="int">
+        SELECT COUNT(1)
+        FROM voc_user
+        WHERE username = #{username}
+    </select>
+    
+</mapper>

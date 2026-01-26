@@ -91,7 +91,7 @@ public class SecurityConfig {
         http.httpBasic((auth) -> auth.disable());
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/join", "/token/renew").permitAll()
+                .requestMatchers("/login", "/", "/api/check/select", "/join", "/token/renew").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterAt(new MyLoginFilter(

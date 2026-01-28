@@ -16,6 +16,8 @@ import web.server.api.jwt.JwtUtil;
 import web.server.api.service.SecretService;
 import web.server.api.service.TokenService;
 
+import java.time.Instant;
+
 @RestController
 @RequestMapping("/token")
 public class TokenController {
@@ -79,11 +81,29 @@ public class TokenController {
 
         String username = jwtUtil.getUsername(clientRefreshToken);
         String role = jwtUtil.getRole(clientRefreshToken);
-        String access = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
-// refresh token must be recreated here
-        response.setHeader("Authorization", "Bearer " + access);
 
-        log.info("access token is reissued");
+        String newAccessToken = jwtUtil.createJwt("access", username, role, secretService.getJwtAccess());
+        String newRefreshToken = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
+
+        // rotate refresh token
+        tokenService.deleteByUsername(username);
+        tokenEntity = new TokenEntity();
+        tokenEntity.setUsername(username);
+        tokenEntity.setToken(newRefreshToken);
+        tokenEntity.setExpiration(Instant.now().plusMillis(secretService.getJwtRefresh()));
+        tokenService.insert(tokenEntity);
+
+        response.setHeader("Authorization", "Bearer " + newAccessToken);
+
+        // create client refresh-token
+        Cookie cookie = new Cookie("refresh", newRefreshToken);
+        cookie.setMaxAge(secretService.getJwtRefreshCookie());
+        //cookie.setSecure(true);	// use case is https
+        cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
+        cookie.setHttpOnly(true);	// cannot use cookie in java script
+        response.addCookie(cookie);
+
+        log.info("access token is reissued, and refresh token is rotated.");
 
         return new ResponseEntity<>(HttpStatus.OK);
     }

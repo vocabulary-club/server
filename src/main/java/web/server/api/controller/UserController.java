@@ -35,9 +35,10 @@ public class UserController {
 
         if(userEntity != null) {
 
+            String name = userEntity.getName();
             String role = userEntity.getRole();
 
-            result.put("username", username);
+            result.put("name", name);
             result.put("role", role);
         }
 

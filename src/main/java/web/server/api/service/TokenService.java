@@ -1,41 +1,48 @@
 package web.server.api.service;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import web.server.api.entity.TokenEntity;
 import web.server.api.mapper.TokenMapper;
+import web.server.api.oauth2.MySuccessHandler;
+
+import java.time.Instant;
 
 @Service
 public class TokenService {
 
-    private final TokenMapper tokenRepository;
+    private static final Logger log = LoggerFactory.getLogger(TokenService.class);
 
-    public TokenService(TokenMapper tokenRepository) {
+    private final TokenMapper tokenMapper;
 
-        this.tokenRepository = tokenRepository;
+    public TokenService(TokenMapper tokenMapper) {
+
+        this.tokenMapper = tokenMapper;
     }
 
     public TokenEntity selectByToken(String token) {
-        return tokenRepository.selectByToken(token);
+        return tokenMapper.selectByToken(token);
     }
 
     public int insert(TokenEntity entity) {
-        return tokenRepository.insert(entity);
+        return tokenMapper.insert(entity);
     }
 
     @Scheduled(fixedRate = 60000)
     public void deleteExpiredTokens() {
-//    	Instant expiration = Instant.now();
-//    	System.out.println("DB refresh check time: " + expiration);
-//    	tokenRepository.deleteExpiredTokens(expiration);
+    	Instant expiration = Instant.now();
+        log.info("DB token check time: " + expiration);
+        tokenMapper.deleteExpiredTokens(expiration);
     }
 
     public int deleteByToken(String token) {
-        return tokenRepository.deleteByToken(token);
+        return tokenMapper.deleteByToken(token);
     }
 
     // one username must have only one refresh token
     public int deleteByUsername(String username) {
-        return tokenRepository.deleteByUsername(username);
+        return tokenMapper.deleteByUsername(username);
     }
 }

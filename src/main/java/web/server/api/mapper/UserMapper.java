@@ -10,5 +10,5 @@ public interface UserMapper {
 
     int insert(UserEntity entity);
 
-    int existsByUsername(String username);
+    int update(UserEntity entity);
 }

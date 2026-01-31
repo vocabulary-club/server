@@ -11,7 +11,8 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
-import web.server.api.dto.MyUserDetails;
+import web.server.api.dto.MyOAuth2User;
+import web.server.api.dto.UserDTO;
 import web.server.api.entity.UserEntity;
 
 import java.io.IOException;
@@ -62,14 +63,13 @@ public class MyJwtFilter extends OncePerRequestFilter {
         String username = jwtUtil.getUsername(token);
         String role = jwtUtil.getRole(token);
 
-        UserEntity userEntity = new UserEntity();
-        userEntity.setUsername(username);
-        userEntity.setPassword("temppassword");
-        userEntity.setRole(role);
+        UserDTO userDTO = new UserDTO();
+        userDTO.setUsername(username);
+        userDTO.setRole(role);
 
-        MyUserDetails userDetails = new MyUserDetails(userEntity);
+        MyOAuth2User myOAuth2User = new MyOAuth2User(userDTO);
 
-        Authentication authToken = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
+        Authentication authToken = new UsernamePasswordAuthenticationToken(myOAuth2User, null, myOAuth2User.getAuthorities());
 
         SecurityContextHolder.getContext().setAuthentication(authToken);
 

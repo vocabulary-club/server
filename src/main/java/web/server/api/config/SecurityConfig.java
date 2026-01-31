@@ -4,6 +4,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -17,8 +18,11 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import web.server.api.jwt.JwtUtil;
 import web.server.api.jwt.MyJwtFilter;
-import web.server.api.jwt.MyLoginFilter;
 import web.server.api.jwt.MyLogoutFilter;
+import web.server.api.oauth2.MyClientRegistrationRepository;
+import web.server.api.oauth2.MyOAuth2AuthorizedClientService;
+import web.server.api.oauth2.MySuccessHandler;
+import web.server.api.service.MyOAuth2UserService;
 import web.server.api.service.SecretService;
 import web.server.api.service.TokenService;
 
@@ -32,33 +36,37 @@ public class SecurityConfig {
     @Value("${app.url}")
     private String appUrl;
 
-    private final AuthenticationConfiguration authenticationConfiguration;
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
-    private final SecretService secretService;
+
+    private final MyOAuth2UserService myOAuth2UserService;
+    private final MySuccessHandler mySuccessHandler;
+
+    private final MyClientRegistrationRepository myClientRegistrationRepository;
+    private final MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService;
+    private final JdbcTemplate jdbcTemplate;
 
     public SecurityConfig(
-            AuthenticationConfiguration authenticationConfiguration,
+            // token related
             JwtUtil jwtUtil,
             TokenService tokenService,
-            SecretService secretService) {
+            // oauth2 related
+            MyOAuth2UserService myOAuth2UserService,
+            MySuccessHandler mySuccessHandler,
+            // social client registration
+            MyClientRegistrationRepository myClientRegistrationRepository,
+            MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService,
+            JdbcTemplate jdbcTemplate) {
 
-        this.authenticationConfiguration = authenticationConfiguration;
         this.jwtUtil = jwtUtil;
         this.tokenService = tokenService;
-        this.secretService = secretService;
-    }
 
-    @Bean
-    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        this.myOAuth2UserService = myOAuth2UserService;
+        this.mySuccessHandler = mySuccessHandler;
 
-        return configuration.getAuthenticationManager();
-    }
-
-    @Bean
-    public BCryptPasswordEncoder bCryptoPasswordEncoder() {
-
-        return new BCryptPasswordEncoder();
+        this.myClientRegistrationRepository = myClientRegistrationRepository;
+        this.myOAuth2AuthorizedClientService = myOAuth2AuthorizedClientService;
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     @Bean
@@ -90,17 +98,19 @@ public class SecurityConfig {
 
         http.httpBasic((auth) -> auth.disable());
 
+        http.oauth2Login((oauth2) -> oauth2
+                .clientRegistrationRepository(myClientRegistrationRepository.clientRegistrationRepository())
+                .authorizedClientService(myOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate,
+                        myClientRegistrationRepository.clientRegistrationRepository()))
+                .userInfoEndpoint((config) -> config.userService(myOAuth2UserService))
+                .successHandler(mySuccessHandler)
+        );
+
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/login", "/", "/join", "/token/renew").permitAll()
+                .requestMatchers("/", "/token/renew").permitAll()
                 .anyRequest().authenticated());
 
-        http.addFilterAt(new MyLoginFilter(
-                authenticationManager(authenticationConfiguration),
-                jwtUtil,
-                tokenService,
-                secretService), UsernamePasswordAuthenticationFilter.class);
-
-        http.addFilterAfter(new MyJwtFilter(jwtUtil), MyLoginFilter.class);
+        http.addFilterAfter(new MyJwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
         http.addFilterBefore(new MyLogoutFilter(jwtUtil, tokenService), LogoutFilter.class);
 

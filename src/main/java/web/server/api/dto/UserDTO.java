@@ -1,15 +1,15 @@
-package web.server.api.entity;
+package web.server.api.dto;
 
 import lombok.Getter;
 import lombok.Setter;
 
-@Setter
 @Getter
-public class UserEntity {
-
-    private String username;
+@Setter
+public class UserDTO {
+	
+    private String username;    
     private String name;
     private String email;
     private String role;
-    private byte[] picture;
+    private String pictureUrl;
 }

@@ -7,24 +7,15 @@ import web.server.api.mapper.UserMapper;
 @Service
 public class UserService {
 
-    private final UserMapper userRepository;
+    private final UserMapper userMapper;
 
-    public UserService(UserMapper userRepository) {
+    public UserService(UserMapper userMapper) {
 
-        this.userRepository = userRepository;
+        this.userMapper = userMapper;
     }
 
     public UserEntity selectByUsername(String username) {
 
-        return userRepository.selectByUsername(username);
+        return userMapper.selectByUsername(username);
     }
-
-    public int insert(UserEntity entity) {
-        return userRepository.insert(entity);
-    }
-
-    public boolean existsByUsername(String username) {
-        return userRepository.existsByUsername(username) > 0;
-    }
-
 }

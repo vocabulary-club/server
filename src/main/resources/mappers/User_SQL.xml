@@ -3,16 +3,16 @@
 <mapper namespace="web.server.api.mapper.UserMapper">
 
 	<select id="selectByUsername" resultType="web.server.api.entity.UserEntity" parameterType="String">
-        SELECT * FROM voc_social_user WHERE username = #{username};
+        SELECT * FROM voc_user WHERE username = #{username};
     </select>
 
     <insert id="insert" parameterType="web.server.api.entity.UserEntity">
-        INSERT INTO voc_social_user (username, name, email, role, picture)
+        INSERT INTO voc_user (username, name, email, role, picture)
         VALUES (#{username}, #{name}, #{email}, #{role}, #{picture});
     </insert>
 
     <update id="update" parameterType="web.server.api.entity.UserEntity">
-        UPDATE voc_social_user
+        UPDATE voc_user
         SET name = #{name}, picture = #{picture}
         WHERE username = #{username};
     </update>

@@ -1,17 +1,17 @@
 package web.server.api.controller;
 
-import web.server.api.service.CheckService;
+import web.server.api.service.TestService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/check")
-public class CheckController {
+@RequestMapping("/api/test")
+public class TestController {
 
-    private final CheckService checkService;
+    private final TestService checkService;
 
-    public CheckController(CheckService checkService) {
+    public TestController(TestService checkService) {
         this.checkService = checkService;
     }
 

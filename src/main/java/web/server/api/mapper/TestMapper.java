@@ -6,7 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 @Mapper
-public interface CheckMapper {
+public interface TestMapper {
 
     List<Map<String, Object>> select();
 }

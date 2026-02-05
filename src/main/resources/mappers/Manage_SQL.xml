@@ -54,7 +54,7 @@
         left join vocabulary.voc_eng eng on (dic.eng_voc_id = eng.voc_id)
         left join vocabulary.voc_mon mon on (dic.mon_voc_id = mon.voc_id)
         where dic.user_id = #{id}
-        order by reg_date desc, dic_id asc;
+        order by reg_date desc, dic_id desc;
     </select>
 
 </mapper>

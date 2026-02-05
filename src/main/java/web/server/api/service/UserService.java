@@ -1,5 +1,7 @@
 package web.server.api.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import web.server.api.dto.UserDTO;
 import web.server.api.entity.UserEntity;
@@ -15,7 +17,11 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public UserDTO selectByUsername(String username) {
+    public UserDTO selectByUsername() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
 
         UserEntity entity = userMapper.selectByUsername(username);
         if(entity != null) {

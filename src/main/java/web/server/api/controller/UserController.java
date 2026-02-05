@@ -25,10 +25,6 @@ public class UserController {
     @GetMapping("/user")
     public Object user() {
 
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
-        return userService.selectByUsername(username);
+        return userService.selectByUsername();
     }
 }

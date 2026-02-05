@@ -1,42 +1,61 @@
 package web.server.api.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.stereotype.Service;
+import web.server.api.entity.UserEntity;
 import web.server.api.mapper.HomeMapper;
 import web.server.api.mapper.ManageMapper;
-import org.springframework.stereotype.Service;
+import web.server.api.mapper.UserMapper;
 
 import java.util.Map;
 
 @Service
 public class HomeService {
 
-    private final HomeMapper homeRepository;
-    private final ManageMapper manageRepository;
+    private final HomeMapper homeMapper;
+    private final UserMapper userMapper;
 
-    public HomeService(HomeMapper homeRepository, ManageMapper manageRepository) {
-        this.homeRepository = homeRepository;
-        this.manageRepository = manageRepository;
+    public HomeService(HomeMapper homeMapper, UserMapper userMapper) {
+        this.homeMapper = homeMapper;
+        this.userMapper = userMapper;
     }
 
     public Object select(Map<String, Object> data) {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity == null) {
+            return null;
+        }
 
         Map<String, Object> lastRegDate = null;
 
         String strDate = data.get("day").toString();
         if(strDate.equals("last")) {
 
-            lastRegDate = homeRepository.selectLastDate();
+            lastRegDate = homeMapper.selectLastDate(entity);
 
         } else if(strDate.equals("second last")) {
 
-            lastRegDate = homeRepository.selectSecondLastDate();
+            lastRegDate = homeMapper.selectSecondLastDate(entity);
 
         } else if(strDate.equals("third last")) {
 
-            lastRegDate = homeRepository.selectThirdLastDate();
+            lastRegDate = homeMapper.selectThirdLastDate(entity);
 
         }
+        if(lastRegDate == null) {
+            return null;
+        }
 
-        return homeRepository.select(lastRegDate);
+        // user PK int
+        lastRegDate.put("userId", entity.getId());
+
+        return homeMapper.select(lastRegDate);
     }
 
 }

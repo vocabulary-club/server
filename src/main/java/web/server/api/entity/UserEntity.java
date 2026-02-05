@@ -5,10 +5,14 @@ import lombok.Setter;
 import web.server.api.dto.UserDTO;
 import web.server.api.utility.ImageUtility;
 
+import java.util.HashMap;
+import java.util.Map;
+
 @Setter
 @Getter
 public class UserEntity {
 
+    private int id;
     private String username;
     private String name;
     private String email;
@@ -29,5 +33,19 @@ public class UserEntity {
         dto.setPictureUrl(pictureSrc);
 
         return dto;
+    }
+
+    public Map<String, Object> toMap() {
+
+        Map<String, Object> map = new HashMap<>();
+
+        map.put("id", id);
+        map.put("username", username);
+        map.put("name", name);
+        map.put("email", email);
+        map.put("role", role);
+        map.put("picture", picture);
+
+        return map;
     }
 }

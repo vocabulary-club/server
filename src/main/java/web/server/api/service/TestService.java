@@ -1,22 +1,38 @@
 package web.server.api.service;
 
-import web.server.api.mapper.TestMapper;
-import web.server.api.mapper.ManageMapper;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import web.server.api.entity.UserEntity;
+import web.server.api.mapper.TestMapper;
+import web.server.api.mapper.UserMapper;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @Service
 public class TestService {
 
-    private final TestMapper checkRepository;
-    private final ManageMapper manageRepository;
+    private final TestMapper testMapper;
+    private final UserMapper userMapper;
 
-    public TestService(TestMapper checkRepository, ManageMapper manageRepository) {
-        this.checkRepository = checkRepository;
-        this.manageRepository = manageRepository;
+    public TestService(TestMapper testMapper, UserMapper userMapper) {
+        this.testMapper = testMapper;
+        this.userMapper = userMapper;
     }
 
     public Object select() {
-        return checkRepository.select();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity == null) {
+            return null;
+        }
+
+        return testMapper.select(entity);
     }
 
 }

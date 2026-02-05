@@ -6,7 +6,6 @@ import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import web.server.api.entity.TokenEntity;
 import web.server.api.mapper.TokenMapper;
-import web.server.api.oauth2.MySuccessHandler;
 
 import java.time.Instant;
 

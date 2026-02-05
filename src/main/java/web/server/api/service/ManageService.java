@@ -1,47 +1,73 @@
 package web.server.api.service;
 
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import web.server.api.entity.UserEntity;
 import web.server.api.mapper.ManageMapper;
 import org.springframework.stereotype.Service;
+import web.server.api.mapper.UserMapper;
 
 import java.util.Map;
 
 @Service
 public class ManageService {
 
-    private final ManageMapper manageRepository;
+    private final ManageMapper manageMapper;
+    private final UserMapper userMapper;
 
-    public ManageService(ManageMapper manageRepository) {
-        this.manageRepository = manageRepository;
+    public ManageService(ManageMapper manageMapper, UserMapper userMapper) {
+        this.manageMapper = manageMapper;
+        this.userMapper = userMapper;
     }
 
     public Object create(Map<String, Object> data) {
 
-        int nEngId = manageRepository.insertVocEng(data);
-        int nMonId = manageRepository.insertVocMon(data);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity == null) {
+            return null;
+        }
+        data.put("user_id", entity.getId());
+
+        int nEngId = manageMapper.insertVocEng(data);
+        int nMonId = manageMapper.insertVocMon(data);
         if(nEngId == 1 && nMonId == 1) {
-            return manageRepository.insertVocDic(data);
+            return manageMapper.insertVocDic(data);
         }
         return 0;
     }
 
     public Object update(Map<String, Object> data) {
 
-        int nEngId = manageRepository.updateVocEng(data);
-        int nMonId = manageRepository.updateVocMon(data);
+        int nEngId = manageMapper.updateVocEng(data);
+        int nMonId = manageMapper.updateVocMon(data);
 
         return 0;
     }
 
     public Object delete(Map<String, Object> data) {
 
-        int nDicId = manageRepository.deleteVocDic(data);
-        int nEngId = manageRepository.deleteVocEng(data);
-        int nMonId = manageRepository.deleteVocMon(data);
+        int nDicId = manageMapper.deleteVocDic(data);
+        int nEngId = manageMapper.deleteVocEng(data);
+        int nMonId = manageMapper.deleteVocMon(data);
 
         return 0;
     }
 
     public Object select() {
-        return manageRepository.select();
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity == null) {
+            return null;
+        }
+
+        return manageMapper.select(entity);
     }
 }

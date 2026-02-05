@@ -39,7 +39,9 @@ public class FacebookResponse implements OAuth2Response{
     public String getPictureURL() {
 
     	if(attribute.containsKey("picture")) {
-    		return attribute.get("picture").toString();	
+            Map<String, Object> picture = (Map<String, Object>) attribute.get("picture");
+            Map<String, Object> data = (Map<String, Object>) picture.get("data");
+            return (String) data.get("url");
     	} 
     	return null;
     }

@@ -29,19 +29,6 @@ public class UserController {
 
         String username = authentication.getName();
 
-        UserEntity userEntity = userService.selectByUsername(username);
-
-        Map<String, Object> result = new HashMap<String, Object>();
-
-        if(userEntity != null) {
-
-            String name = userEntity.getName();
-            String role = userEntity.getRole();
-
-            result.put("name", name);
-            result.put("role", role);
-        }
-
-        return result;
+        return userService.selectByUsername(username);
     }
 }

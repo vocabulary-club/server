@@ -2,6 +2,8 @@ package web.server.api.entity;
 
 import lombok.Getter;
 import lombok.Setter;
+import web.server.api.dto.UserDTO;
+import web.server.api.utility.ImageUtility;
 
 @Setter
 @Getter
@@ -12,4 +14,20 @@ public class UserEntity {
     private String email;
     private String role;
     private byte[] picture;
+
+    public UserDTO getUserDTO() {
+
+        String pictureSrc = picture != null
+                ? "data:image/png;base64," + ImageUtility.encodeToBase64(picture)
+                : null;
+
+        UserDTO dto = new UserDTO();
+        dto.setUsername(username);
+        dto.setName(name);
+        dto.setEmail(email);
+        dto.setRole(role);
+        dto.setPictureUrl(pictureSrc);
+
+        return dto;
+    }
 }

@@ -54,7 +54,7 @@ public class MyClientRegistration {
                 .scope("public_profile", "email")
                 .authorizationUri("https://www.facebook.com/v12.0/dialog/oauth")
                 .tokenUri("https://graph.facebook.com/v12.0/oauth/access_token")
-                .userInfoUri("https://graph.facebook.com/me?fields=id,name,email")
+                .userInfoUri("https://graph.facebook.com/me?fields=id,name,email,picture.type(large)")
                 .userNameAttributeName("id")
                 .build();
     }

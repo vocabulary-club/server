@@ -107,7 +107,7 @@ public class SecurityConfig {
         );
 
         http.authorizeHttpRequests((auth) -> auth
-                .requestMatchers("/", "/token/renew").permitAll()
+                .requestMatchers("/token/renew").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterAfter(new MyJwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

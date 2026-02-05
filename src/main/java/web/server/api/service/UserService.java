@@ -1,6 +1,7 @@
 package web.server.api.service;
 
 import org.springframework.stereotype.Service;
+import web.server.api.dto.UserDTO;
 import web.server.api.entity.UserEntity;
 import web.server.api.mapper.UserMapper;
 
@@ -14,8 +15,12 @@ public class UserService {
         this.userMapper = userMapper;
     }
 
-    public UserEntity selectByUsername(String username) {
+    public UserDTO selectByUsername(String username) {
 
-        return userMapper.selectByUsername(username);
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity != null) {
+            return entity.getUserDTO();
+        }
+        return null;
     }
 }

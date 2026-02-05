@@ -8,6 +8,7 @@ import web.server.api.mapper.HomeMapper;
 import web.server.api.mapper.ManageMapper;
 import web.server.api.mapper.UserMapper;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -29,7 +30,7 @@ public class HomeService {
 
         UserEntity entity = userMapper.selectByUsername(username);
         if(entity == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         Map<String, Object> lastRegDate = null;
@@ -49,7 +50,7 @@ public class HomeService {
 
         }
         if(lastRegDate == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         // user PK int

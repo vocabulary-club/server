@@ -7,6 +7,7 @@ import web.server.api.entity.UserEntity;
 import web.server.api.mapper.TestMapper;
 import web.server.api.mapper.UserMapper;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,7 +30,7 @@ public class TestService {
 
         UserEntity entity = userMapper.selectByUsername(username);
         if(entity == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         return testMapper.select(entity);

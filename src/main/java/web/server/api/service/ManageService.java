@@ -7,6 +7,7 @@ import web.server.api.mapper.ManageMapper;
 import org.springframework.stereotype.Service;
 import web.server.api.mapper.UserMapper;
 
+import java.util.Collections;
 import java.util.Map;
 
 @Service
@@ -28,7 +29,7 @@ public class ManageService {
 
         UserEntity entity = userMapper.selectByUsername(username);
         if(entity == null) {
-            return null;
+            return 0;
         }
         data.put("user_id", entity.getId());
 
@@ -65,7 +66,7 @@ public class ManageService {
 
         UserEntity entity = userMapper.selectByUsername(username);
         if(entity == null) {
-            return null;
+            return Collections.emptyList();
         }
 
         return manageMapper.select(entity);

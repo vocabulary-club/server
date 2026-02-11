@@ -19,6 +19,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import web.server.api.jwt.JwtUtil;
 import web.server.api.jwt.MyJwtFilter;
 import web.server.api.jwt.MyLogoutFilter;
+import web.server.api.jwt.MyLogoutHelper;
 import web.server.api.oauth2.MyClientRegistrationRepository;
 import web.server.api.oauth2.MyOAuth2AuthorizedClientService;
 import web.server.api.oauth2.MySuccessHandler;
@@ -38,6 +39,7 @@ public class SecurityConfig {
 
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
+    private final MyLogoutHelper myLogoutHelper;
 
     private final MyOAuth2UserService myOAuth2UserService;
     private final MySuccessHandler mySuccessHandler;
@@ -50,6 +52,7 @@ public class SecurityConfig {
             // token related
             JwtUtil jwtUtil,
             TokenService tokenService,
+            MyLogoutHelper myLogoutHelper,
             // oauth2 related
             MyOAuth2UserService myOAuth2UserService,
             MySuccessHandler mySuccessHandler,
@@ -60,6 +63,7 @@ public class SecurityConfig {
 
         this.jwtUtil = jwtUtil;
         this.tokenService = tokenService;
+        this.myLogoutHelper = myLogoutHelper;
 
         this.myOAuth2UserService = myOAuth2UserService;
         this.mySuccessHandler = mySuccessHandler;
@@ -112,7 +116,7 @@ public class SecurityConfig {
 
         http.addFilterAfter(new MyJwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
 
-        http.addFilterBefore(new MyLogoutFilter(jwtUtil, tokenService), LogoutFilter.class);
+        http.addFilterBefore(new MyLogoutFilter(myLogoutHelper), LogoutFilter.class);
 
         http.sessionManagement((session) -> session
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS));

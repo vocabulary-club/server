@@ -21,13 +21,11 @@ public class MyLogoutFilter extends GenericFilterBean {
 
     private static final Logger log = LoggerFactory.getLogger(MyLogoutFilter.class);
 
-    private final JwtUtil jwtUtil;
-    private final TokenService tokenService;
+    private final MyLogoutHelper myLogoutHelper;
 
-    public MyLogoutFilter(JwtUtil jwtUtil, TokenService tokenService) {
+    public MyLogoutFilter(MyLogoutHelper myLogoutHelper) {
 
-        this.jwtUtil = jwtUtil;
-        this.tokenService = tokenService;
+        this.myLogoutHelper = myLogoutHelper;
     }
 
     @Override
@@ -58,57 +56,6 @@ public class MyLogoutFilter extends GenericFilterBean {
             return;
         }
 
-        Cookie[] cookies = request.getCookies();
-        if(cookies == null) {
-            log.info("cookie is null");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-
-        String clientRefreshToken = null;
-        for (Cookie cookie : cookies) {
-            if (cookie.getName().equals("refresh")) {
-                clientRefreshToken = cookie.getValue();
-            }
-        }
-
-        if (clientRefreshToken == null) {
-            log.info("refresh token is null");
-            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
-            return;
-        }
-
-        // DB에 저장되어 있는지 확인
-        TokenEntity tokenEntity = tokenService.selectByToken(clientRefreshToken);
-        if (tokenEntity == null) {
-            log.info("invalid refresh token");
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        String serverRefreshToken = tokenEntity.getToken();
-
-        // if token is EXPIRED, return.
-        try {
-
-            jwtUtil.isExpired(serverRefreshToken);
-
-        } catch (ExpiredJwtException e) {
-            log.info("expired refresh token");
-            tokenService.deleteByToken(serverRefreshToken);
-            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-            return;
-        }
-
-        // 로그아웃 진행
-        tokenService.deleteByToken(serverRefreshToken);
-
-        // set client refresh-token null
-        Cookie cookie = new Cookie("refresh", null);
-        cookie.setMaxAge(0);
-        cookie.setPath("/");
-
-        response.addCookie(cookie);
-        response.setStatus(HttpServletResponse.SC_OK);
+        myLogoutHelper.logout(request, response);
     }
 }

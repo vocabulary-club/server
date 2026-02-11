@@ -7,14 +7,19 @@
     </select>
 
     <insert id="insert" parameterType="web.server.api.entity.UserEntity">
-        INSERT INTO voc_user (username, name, email, role, picture)
+        INSERT INTO vocabulary.voc_user (username, name, email, role, picture)
         VALUES (#{username}, #{name}, #{email}, #{role}, #{picture});
     </insert>
 
     <update id="update" parameterType="web.server.api.entity.UserEntity">
-        UPDATE voc_user
+        UPDATE vocabulary.voc_user
         SET name = #{name}, picture = #{picture}
         WHERE username = #{username};
     </update>
+
+    <delete id="deleteByUsername" parameterType="String">
+        delete from vocabulary.voc_user
+        WHERE username = #{username};
+    </delete>
     
 </mapper>

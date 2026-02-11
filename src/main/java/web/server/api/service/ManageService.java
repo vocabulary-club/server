@@ -1,24 +1,37 @@
 package web.server.api.service;
 
+import jakarta.servlet.http.Cookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import web.server.api.entity.UserEntity;
-import web.server.api.mapper.ManageMapper;
+import web.server.api.mapper.*;
 import org.springframework.stereotype.Service;
-import web.server.api.mapper.UserMapper;
 
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 @Service
 public class ManageService {
 
     private final ManageMapper manageMapper;
     private final UserMapper userMapper;
+    private final DicMapper dicMapper;
+    private final WordMapper wordMapper;
+    private final MeanMapper meanMapper;
 
-    public ManageService(ManageMapper manageMapper, UserMapper userMapper) {
+    public ManageService(ManageMapper manageMapper,
+                         UserMapper userMapper,
+                         DicMapper dicMapper,
+                         WordMapper wordMapper,
+                         MeanMapper meanMapper) {
         this.manageMapper = manageMapper;
         this.userMapper = userMapper;
+        this.dicMapper = dicMapper;
+        this.wordMapper = wordMapper;
+        this.meanMapper = meanMapper;
     }
 
     public Object create(Map<String, Object> data) {
@@ -70,5 +83,19 @@ public class ManageService {
         }
 
         return manageMapper.select(entity);
+    }
+
+    public Object deleteByUserId(int userId) {
+
+        List<Map<String, Object>> dicList =  dicMapper.selectByUserId(userId);
+        for (Map<String, Object> dic : dicList) {
+            String engVocId = dic.get("eng_id").toString();
+            String monVocId = dic.get("mon_id").toString();
+            wordMapper.deleteById(Integer.parseInt(engVocId));
+            meanMapper.deleteById(Integer.parseInt(monVocId));
+        }
+        dicMapper.deleteByUserId(userId);
+
+        return 0;
     }
 }

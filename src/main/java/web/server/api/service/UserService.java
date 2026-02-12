@@ -52,7 +52,7 @@ public class UserService {
             return 0;
         }
 
-        // 1. delete voc_dic by user_id
+        // 1. delete voc_word, voc_mean by user_id
         manageService.deleteByUserId(entity.getId());
 
         // 2. delete oauth2_authorized_client by username = principal_name

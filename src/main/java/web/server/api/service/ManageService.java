@@ -85,6 +85,20 @@ public class ManageService {
         return manageMapper.select(entity);
     }
 
+    public Object selectByUserId() {
+
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        String username = authentication.getName();
+
+        UserEntity entity = userMapper.selectByUsername(username);
+        if(entity == null) {
+            return Collections.emptyList();
+        }
+
+        return manageMapper.selectByUserId(entity.getId());
+    }
+
     public Object deleteByUserId(int userId) {
 
         List<Map<String, Object>> dicList =  dicMapper.selectByUserId(userId);

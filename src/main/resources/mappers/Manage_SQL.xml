@@ -57,4 +57,19 @@
         order by reg_date desc, dic_id desc;
     </select>
 
+    <select id="selectByUserId" resultType="Map" parameterType="int">
+        select
+            m.mean_id as dic_id,
+            w.word_id as eng_id,
+            w.word as eng_word,
+            m.mean_id as mon_id,
+            m.definition as mon_word,
+            date_format(w.reg_date, '%Y-%m-%d') as reg_date,
+            date_format(w.reg_date, '%m-%d') as reg_month_day
+        from vocabulary.voc_mean m
+        left join vocabulary.voc_word w on (w.word_id = m.word_id)
+        where w.user_id =  #{userId}
+        order by w.reg_date desc, w.word_id desc;
+    </select>
+
 </mapper>

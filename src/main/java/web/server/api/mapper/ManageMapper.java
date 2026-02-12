@@ -18,4 +18,5 @@ public interface ManageMapper {
     int deleteVocEng(Map<String, Object> data);
     int deleteVocMon(Map<String, Object> data);
     List<Map<String, Object>> select(UserEntity entity);
+    List<Map<String, Object>> selectByUserId(int userId);
 }

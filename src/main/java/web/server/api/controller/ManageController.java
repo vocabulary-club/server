@@ -32,6 +32,6 @@ public class ManageController {
 
     @GetMapping("/select")
     public Object select() {
-        return manageService.select();
+        return manageService.selectByUserId();
     }
 }

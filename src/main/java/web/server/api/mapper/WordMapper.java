@@ -14,4 +14,5 @@ public interface WordMapper {
     int update(Map<String, Object> data);
     int delete(Map<String, Object> data);
     int deleteByWordId(int wordId);
+    int deleteByUserId(int userId);
 }

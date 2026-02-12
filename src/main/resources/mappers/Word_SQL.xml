@@ -31,4 +31,8 @@
         delete from vocabulary.voc_word where word_id = #{wordId};
     </delete>
 
+    <delete id="deleteByUserId" parameterType="int">
+        delete from vocabulary.voc_word where user_id = #{userId};
+    </delete>
+
 </mapper>

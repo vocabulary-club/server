@@ -1,6 +1,5 @@
 package web.server.api.service;
 
-import jakarta.servlet.http.Cookie;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import web.server.api.entity.UserEntity;
@@ -17,16 +16,13 @@ import static java.lang.Integer.parseInt;
 public class ManageService {
 
     private final UserMapper userMapper;
-    private final DicMapper dicMapper;
     private final WordMapper wordMapper;
     private final MeanMapper meanMapper;
 
     public ManageService(UserMapper userMapper,
-                         DicMapper dicMapper,
                          WordMapper wordMapper,
                          MeanMapper meanMapper) {
         this.userMapper = userMapper;
-        this.dicMapper = dicMapper;
         this.wordMapper = wordMapper;
         this.meanMapper = meanMapper;
     }
@@ -82,11 +78,9 @@ public class ManageService {
         List<Map<String, Object>> wordList =  meanMapper.selectByUserId(userId);
         for (Map<String, Object> word : wordList) {
             int meanId = Integer.parseInt(word.get("mean_id").toString());
-            int wordId = Integer.parseInt(word.get("word_id").toString());
             meanMapper.deleteByMeanId(meanId);
-            wordMapper.deleteByWordId(wordId);
         }
-        dicMapper.deleteByUserId(userId);
+        wordMapper.deleteByUserId(userId);
 
         return 0;
     }

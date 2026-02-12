@@ -8,7 +8,7 @@
     </insert>
 
     <insert id="insertVocMon" parameterType="map" useGeneratedKeys="true" keyProperty="mon_id">
-        insert into vocabulary.voc_mean (voc_word)
+        insert into vocabulary.voc_mean (definition)
         values(#{mon_word})
     </insert>
 
@@ -25,8 +25,8 @@
 
     <update id="updateVocMon" parameterType="map">
         update vocabulary.voc_mean
-        set voc_word = #{mon_word}
-        where voc_id = #{mon_id};
+        set definition = #{mon_word}
+        where mean_id = #{mon_id};
     </update>
 
     <delete id="deleteVocDic" parameterType="map">
@@ -41,18 +41,18 @@
 
     <delete id="deleteVocMon" parameterType="map">
         delete from vocabulary.voc_mean
-        where voc_id = #{mon_id};
+        where mean_id = #{mon_id};
     </delete>
 
     <select id="select" resultType="Map" parameterType="web.server.api.entity.UserEntity">
         select dic.dic_id,
             eng.word_id as eng_id, eng.word as eng_word,
-            mon.voc_id as mon_id, mon.voc_word as mon_word,
+            mon.mean_id as mon_id, mon.definition as mon_word,
             date_format(dic.reg_date, '%Y-%m-%d') as reg_date,
             date_format(dic.reg_date, '%m-%d') as reg_month_day
         from vocabulary.voc_dic dic
         left join vocabulary.voc_word eng on (dic.eng_voc_id = eng.word_id)
-        left join vocabulary.voc_mean mon on (dic.mon_voc_id = mon.voc_id)
+        left join vocabulary.voc_mean mon on (dic.mon_voc_id = mon.mean_id)
         where dic.user_id = #{id}
         order by reg_date desc, dic_id desc;
     </select>

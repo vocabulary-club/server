@@ -3,7 +3,7 @@
 <mapper namespace="web.server.api.mapper.MeanMapper">
 
     <delete id="deleteById" parameterType="int">
-        delete from vocabulary.voc_mean where voc_id = #{vocId};
+        delete from vocabulary.voc_mean where mean_id = #{vocId};
     </delete>
 
 </mapper>

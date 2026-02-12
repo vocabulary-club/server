@@ -3,7 +3,7 @@
 <mapper namespace="web.server.api.mapper.WordMapper">
 
     <delete id="deleteById" parameterType="int">
-        delete from vocabulary.voc_eng where voc_id = #{vocId};
+        delete from vocabulary.voc_word where voc_id = #{vocId};
     </delete>
 
 </mapper>

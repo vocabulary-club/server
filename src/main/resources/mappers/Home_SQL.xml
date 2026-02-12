@@ -34,7 +34,7 @@
             date_format(dic.reg_date, '%Y-%m-%d') as reg_date,
             date_format(dic.reg_date, '%m-%d') as reg_month_day
         from vocabulary.voc_dic dic
-        left join vocabulary.voc_eng eng on (dic.eng_voc_id = eng.voc_id)
+        left join vocabulary.voc_word eng on (dic.eng_voc_id = eng.voc_id)
         left join vocabulary.voc_mon mon on (dic.mon_voc_id = mon.voc_id)
         where dic.user_id = #{userId} and dic.reg_date = #{reg_date}
         order by dic_id;

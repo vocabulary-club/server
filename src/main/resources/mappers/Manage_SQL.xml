@@ -3,7 +3,7 @@
 <mapper namespace="web.server.api.mapper.ManageMapper">
 
     <insert id="insertVocEng" parameterType="map" useGeneratedKeys="true" keyProperty="eng_id">
-        insert into vocabulary.voc_word (voc_word)
+        insert into vocabulary.voc_word (word)
         values(#{eng_word})
     </insert>
 
@@ -19,7 +19,7 @@
 
     <update id="updateVocEng" parameterType="map">
         update vocabulary.voc_word
-        set voc_word = #{eng_word}
+        set word = #{eng_word}
         where word_id = #{eng_id};
     </update>
 
@@ -46,7 +46,7 @@
 
     <select id="select" resultType="Map" parameterType="web.server.api.entity.UserEntity">
         select dic.dic_id,
-            eng.word_id as eng_id, eng.voc_word as eng_word,
+            eng.word_id as eng_id, eng.word as eng_word,
             mon.voc_id as mon_id, mon.voc_word as mon_word,
             date_format(dic.reg_date, '%Y-%m-%d') as reg_date,
             date_format(dic.reg_date, '%m-%d') as reg_month_day

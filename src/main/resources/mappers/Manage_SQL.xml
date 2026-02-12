@@ -3,8 +3,8 @@
 <mapper namespace="web.server.api.mapper.ManageMapper">
 
     <insert id="insertVocEng" parameterType="map" useGeneratedKeys="true" keyProperty="eng_id">
-        insert into vocabulary.voc_word (word)
-        values(#{eng_word})
+        insert into vocabulary.voc_word (word, user_id)
+        values(#{eng_word}, #{user_id})
     </insert>
 
     <insert id="insertVocMon" parameterType="map" useGeneratedKeys="true" keyProperty="mon_id">

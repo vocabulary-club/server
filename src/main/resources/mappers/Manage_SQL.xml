@@ -8,7 +8,7 @@
     </insert>
 
     <insert id="insertVocMon" parameterType="map" useGeneratedKeys="true" keyProperty="mon_id">
-        insert into vocabulary.voc_mon (voc_word)
+        insert into vocabulary.voc_mean (voc_word)
         values(#{mon_word})
     </insert>
 
@@ -24,7 +24,7 @@
     </update>
 
     <update id="updateVocMon" parameterType="map">
-        update vocabulary.voc_mon
+        update vocabulary.voc_mean
         set voc_word = #{mon_word}
         where voc_id = #{mon_id};
     </update>
@@ -40,7 +40,7 @@
     </delete>
 
     <delete id="deleteVocMon" parameterType="map">
-        delete from vocabulary.voc_mon
+        delete from vocabulary.voc_mean
         where voc_id = #{mon_id};
     </delete>
 
@@ -52,7 +52,7 @@
             date_format(dic.reg_date, '%m-%d') as reg_month_day
         from vocabulary.voc_dic dic
         left join vocabulary.voc_word eng on (dic.eng_voc_id = eng.word_id)
-        left join vocabulary.voc_mon mon on (dic.mon_voc_id = mon.voc_id)
+        left join vocabulary.voc_mean mon on (dic.mon_voc_id = mon.voc_id)
         where dic.user_id = #{id}
         order by reg_date desc, dic_id desc;
     </select>

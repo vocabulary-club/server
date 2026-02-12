@@ -37,15 +37,15 @@ public class HomeService {
         String strDate = data.get("day").toString();
         if(strDate.equals("last")) {
 
-            lastRegDate = homeMapper.selectLastDate(entity);
+            lastRegDate = homeMapper.selectLastDate(entity.getId());
 
         } else if(strDate.equals("second last")) {
 
-            lastRegDate = homeMapper.selectSecondLastDate(entity);
+            lastRegDate = homeMapper.selectSecondLastDate(entity.getId());
 
         } else if(strDate.equals("third last")) {
 
-            lastRegDate = homeMapper.selectThirdLastDate(entity);
+            lastRegDate = homeMapper.selectThirdLastDate(entity.getId());
 
         }
         if(lastRegDate == null) {

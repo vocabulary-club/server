@@ -2,42 +2,39 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="web.server.api.mapper.HomeMapper">
 
-    <select id="selectLastDate" resultType="Map" parameterType="web.server.api.entity.UserEntity">
-        select max(reg_date) as reg_date
-        from vocabulary.voc_dic
-        where user_id = #{id};
+    <select id="selectLastDate" resultType="Map" parameterType="int">
+        select max(reg_date) as reg_date from vocabulary.voc_word where user_id = #{userId};
     </select>
 
-    <select id="selectSecondLastDate" resultType="Map" parameterType="web.server.api.entity.UserEntity">
+    <select id="selectSecondLastDate" resultType="Map" parameterType="int">
         select max(reg_date) as reg_date
-        from vocabulary.voc_dic
-        where user_id = #{id}
-        and reg_date <![CDATA[ < ]]> ( select max(reg_date) from vocabulary.voc_dic where user_id = #{id});
+        from vocabulary.voc_word
+        where user_id = #{userId}
+        and reg_date <![CDATA[ < ]]> ( select max(reg_date) from vocabulary.voc_word where user_id = #{userId});
     </select>
 
-    <select id="selectThirdLastDate" resultType="Map" parameterType="web.server.api.entity.UserEntity">
+    <select id="selectThirdLastDate" resultType="Map" parameterType="int">
         select max(reg_date) as reg_date
-        from vocabulary.voc_dic
-        where user_id = #{id}
+        from vocabulary.voc_word
+        where user_id = #{userId}
         and reg_date <![CDATA[ < ]]> (
             select max(reg_date)
-            from vocabulary.voc_dic
-            where user_id = #{id}
-            and reg_date <![CDATA[ < ]]> ( select max(reg_date) from vocabulary.voc_dic where user_id = #{id})
+            from vocabulary.voc_word
+            where user_id = #{userId}
+            and reg_date <![CDATA[ < ]]> ( select max(reg_date) from vocabulary.voc_word where user_id = #{userId})
         );
     </select>
 
     <select id="select" resultType="Map" parameterType="Map">
-        select dic.dic_id,
-            eng.word_id as eng_id, eng.word as eng_word,
-            mon.mean_id as mon_id, mon.definition as mon_word,
-            date_format(dic.reg_date, '%Y-%m-%d') as reg_date,
-            date_format(dic.reg_date, '%m-%d') as reg_month_day
-        from vocabulary.voc_dic dic
-        left join vocabulary.voc_word eng on (dic.eng_voc_id = eng.word_id)
-        left join vocabulary.voc_mean mon on (dic.mon_voc_id = mon.mean_id)
-        where dic.user_id = #{userId} and dic.reg_date = #{reg_date}
-        order by dic_id;
+        select
+            m.mean_id, m.definition, m.seq,
+            w.word_id, w.word,
+            date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
+            date_format(w.reg_date, '%m-%d') as reg_md
+        from vocabulary.voc_mean m
+        left join vocabulary.voc_word w on (w.word_id = m.word_id)
+        where w.user_id = #{userId} and w.reg_date = #{reg_date}
+        order by m.mean_id;
     </select>
 
 </mapper>

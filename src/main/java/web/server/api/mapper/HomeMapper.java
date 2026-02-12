@@ -9,8 +9,8 @@ import java.util.Map;
 @Mapper
 public interface HomeMapper {
 
-    Map<String, Object> selectLastDate(UserEntity entity);
-    Map<String, Object> selectSecondLastDate(UserEntity entity);
-    Map<String, Object> selectThirdLastDate(UserEntity entity);
+    Map<String, Object> selectLastDate(int userId);
+    Map<String, Object> selectSecondLastDate(int userId);
+    Map<String, Object> selectThirdLastDate(int userId);
     List<Map<String, Object>> select(Map<String, Object> data);
 }

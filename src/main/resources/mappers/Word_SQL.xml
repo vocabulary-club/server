@@ -2,8 +2,33 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="web.server.api.mapper.WordMapper">
 
-    <delete id="deleteById" parameterType="int">
-        delete from vocabulary.voc_word where word_id = #{vocId};
+    <select id="selectByUserId" resultType="Map" parameterType="int">
+        select
+            w.word_id, w.word,
+            date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
+            date_format(w.reg_date, '%m-%d') as reg_md,
+            m.mean_id, m.definition, m.seq
+        from vocabulary.voc_word w
+        left join vocabulary.voc_mean m on (w.word_id = m.word_id)
+        where w.user_id = #{userId}
+        order by w.reg_date desc, w.word_id desc;
+    </select>
+
+    <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="wordId">
+        insert into vocabulary.voc_word (word, user_id)
+        values(#{word}, #{userId})
+    </insert>
+
+    <update id="update" parameterType="map">
+        update vocabulary.voc_word set word = #{word} where word_id = #{wordId};
+    </update>
+
+    <delete id="delete" parameterType="map">
+        delete from vocabulary.voc_word where word_id = #{wordId};
+    </delete>
+
+    <delete id="deleteByWordId" parameterType="int">
+        delete from vocabulary.voc_word where word_id = #{wordId};
     </delete>
 
 </mapper>

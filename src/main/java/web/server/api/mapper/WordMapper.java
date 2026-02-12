@@ -9,5 +9,9 @@ import java.util.Map;
 @Mapper
 public interface WordMapper {
 
-    int deleteById(int vocId);
+    List<Map<String, Object>> selectByUserId(int userId);
+    int insert(Map<String, Object> data);
+    int update(Map<String, Object> data);
+    int delete(Map<String, Object> data);
+    int deleteByWordId(int wordId);
 }

@@ -5,7 +5,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import web.server.api.entity.UserEntity;
 import web.server.api.mapper.HomeMapper;
-import web.server.api.mapper.ManageMapper;
 import web.server.api.mapper.UserMapper;
 
 import java.util.Collections;

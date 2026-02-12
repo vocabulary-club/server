@@ -30,8 +30,8 @@ public class ManageController {
         return manageService.delete(data);
     }
 
-    @GetMapping("/select")
-    public Object select() {
+    @GetMapping("/selectByUserId")
+    public Object selectByUserId() {
         return manageService.selectByUserId();
     }
 }

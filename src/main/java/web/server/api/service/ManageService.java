@@ -16,18 +16,15 @@ import static java.lang.Integer.parseInt;
 @Service
 public class ManageService {
 
-    private final ManageMapper manageMapper;
     private final UserMapper userMapper;
     private final DicMapper dicMapper;
     private final WordMapper wordMapper;
     private final MeanMapper meanMapper;
 
-    public ManageService(ManageMapper manageMapper,
-                         UserMapper userMapper,
+    public ManageService(UserMapper userMapper,
                          DicMapper dicMapper,
                          WordMapper wordMapper,
                          MeanMapper meanMapper) {
-        this.manageMapper = manageMapper;
         this.userMapper = userMapper;
         this.dicMapper = dicMapper;
         this.wordMapper = wordMapper;
@@ -44,45 +41,25 @@ public class ManageService {
         if(entity == null) {
             return 0;
         }
-        data.put("user_id", entity.getId());
+        data.put("userId", entity.getId());
 
-        int nEngId = manageMapper.insertVocEng(data);
-        int nMonId = manageMapper.insertVocMon(data);
-        if(nEngId == 1 && nMonId == 1) {
-            return manageMapper.insertVocDic(data);
-        }
-        return 0;
+        int result = wordMapper.insert(data);
+        if(result == 1) { meanMapper.insert(data); }
+        return result;
     }
 
     public Object update(Map<String, Object> data) {
 
-        int nEngId = manageMapper.updateVocEng(data);
-        int nMonId = manageMapper.updateVocMon(data);
-
-        return 0;
+        int result = wordMapper.update(data);
+        if(result == 1) { meanMapper.update(data); }
+        return result;
     }
 
     public Object delete(Map<String, Object> data) {
 
-        int nDicId = manageMapper.deleteVocDic(data);
-        int nEngId = manageMapper.deleteVocEng(data);
-        int nMonId = manageMapper.deleteVocMon(data);
-
-        return 0;
-    }
-
-    public Object select() {
-
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-
-        String username = authentication.getName();
-
-        UserEntity entity = userMapper.selectByUsername(username);
-        if(entity == null) {
-            return Collections.emptyList();
-        }
-
-        return manageMapper.select(entity);
+        int result = meanMapper.delete(data);
+        if(result == 1) { wordMapper.delete(data); }
+        return result;
     }
 
     public Object selectByUserId() {
@@ -96,17 +73,18 @@ public class ManageService {
             return Collections.emptyList();
         }
 
-        return manageMapper.selectByUserId(entity.getId());
+        return wordMapper.selectByUserId(entity.getId());
+        //return meanMapper.selectByUserId(entity.getId());
     }
 
     public Object deleteByUserId(int userId) {
 
-        List<Map<String, Object>> dicList =  dicMapper.selectByUserId(userId);
-        for (Map<String, Object> dic : dicList) {
-            String engVocId = dic.get("eng_id").toString();
-            String monVocId = dic.get("mon_id").toString();
-            wordMapper.deleteById(Integer.parseInt(engVocId));
-            meanMapper.deleteById(Integer.parseInt(monVocId));
+        List<Map<String, Object>> wordList =  meanMapper.selectByUserId(userId);
+        for (Map<String, Object> word : wordList) {
+            int meanId = Integer.parseInt(word.get("mean_id").toString());
+            int wordId = Integer.parseInt(word.get("word_id").toString());
+            meanMapper.deleteByMeanId(meanId);
+            wordMapper.deleteByWordId(wordId);
         }
         dicMapper.deleteByUserId(userId);
 

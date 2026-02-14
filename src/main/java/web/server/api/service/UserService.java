@@ -53,7 +53,7 @@ public class UserService {
         }
 
         // 1. delete voc_word, voc_mean by user_id
-        manageService.deleteByUserId(entity.getId());
+        manageService.deleteByUserId(entity.getUserId());
 
         // 2. delete oauth2_authorized_client by username = principal_name
         oauth2Mapper.deleteByUsername(username);

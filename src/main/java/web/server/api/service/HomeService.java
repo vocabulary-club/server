@@ -35,17 +35,18 @@ public class HomeService {
         Map<String, Object> lastRegDate = null;
 
         String strDate = data.get("day").toString();
+        int userId = entity.getUserId();
         if(strDate.equals("last")) {
 
-            lastRegDate = homeMapper.selectLastDate(entity.getId());
+            lastRegDate = homeMapper.selectLastDate(userId);
 
         } else if(strDate.equals("second last")) {
 
-            lastRegDate = homeMapper.selectSecondLastDate(entity.getId());
+            lastRegDate = homeMapper.selectSecondLastDate(userId);
 
         } else if(strDate.equals("third last")) {
 
-            lastRegDate = homeMapper.selectThirdLastDate(entity.getId());
+            lastRegDate = homeMapper.selectThirdLastDate(userId);
 
         }
         if(lastRegDate == null) {
@@ -53,7 +54,7 @@ public class HomeService {
         }
 
         // user PK int
-        lastRegDate.put("userId", entity.getId());
+        lastRegDate.put("userId", userId);
 
         return homeMapper.select(lastRegDate);
     }

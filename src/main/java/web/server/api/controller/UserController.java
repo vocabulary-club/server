@@ -3,15 +3,12 @@ package web.server.api.controller;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
-import web.server.api.entity.UserEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 import web.server.api.jwt.MyLogoutHelper;
 import web.server.api.service.UserService;
-
-import java.util.HashMap;
-import java.util.Map;
 
 import static java.lang.Integer.parseInt;
 

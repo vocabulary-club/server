@@ -13,7 +13,6 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 import web.server.api.dto.MyOAuth2User;
 import web.server.api.dto.UserDTO;
-import web.server.api.entity.UserEntity;
 
 import java.io.IOException;
 

@@ -12,7 +12,7 @@ import java.util.Map;
 @Getter
 public class UserEntity {
 
-    private int id;
+    private int userId;
     private String username;
     private String name;
     private String email;
@@ -39,7 +39,7 @@ public class UserEntity {
 
         Map<String, Object> map = new HashMap<>();
 
-        map.put("id", id);
+        map.put("userId", userId);
         map.put("username", username);
         map.put("name", name);
         map.put("email", email);

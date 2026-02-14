@@ -2,15 +2,15 @@ package web.server.api.service;
 
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import web.server.api.entity.UserEntity;
-import web.server.api.mapper.*;
 import org.springframework.stereotype.Service;
+import web.server.api.entity.UserEntity;
+import web.server.api.mapper.MeanMapper;
+import web.server.api.mapper.UserMapper;
+import web.server.api.mapper.WordMapper;
 
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-
-import static java.lang.Integer.parseInt;
 
 @Service
 public class ManageService {
@@ -37,24 +37,24 @@ public class ManageService {
         if(entity == null) {
             return 0;
         }
-        data.put("userId", entity.getId());
+        data.put("userId", entity.getUserId());
 
         int result = wordMapper.insert(data);
-        if(result == 1) { meanMapper.insert(data); }
+        if(result == 1) { result = meanMapper.insert(data); }
         return result;
     }
 
     public Object update(Map<String, Object> data) {
 
         int result = wordMapper.update(data);
-        if(result == 1) { meanMapper.update(data); }
+        if(result == 1) { result = meanMapper.update(data); }
         return result;
     }
 
     public Object delete(Map<String, Object> data) {
 
         int result = meanMapper.delete(data);
-        if(result == 1) { wordMapper.delete(data); }
+        if(result == 1) { result = wordMapper.delete(data); }
         return result;
     }
 
@@ -69,8 +69,8 @@ public class ManageService {
             return Collections.emptyList();
         }
 
-        return wordMapper.selectByUserId(entity.getId());
-        //return meanMapper.selectByUserId(entity.getId());
+        return wordMapper.selectByUserId(entity.getUserId());
+        //return meanMapper.selectByUserId(entity.getUserId());
     }
 
     public Object deleteByUserId(int userId) {

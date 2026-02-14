@@ -1,7 +1,6 @@
 package web.server.api.mapper;
 
 import org.apache.ibatis.annotations.Mapper;
-import web.server.api.entity.UserEntity;
 
 import java.util.List;
 import java.util.Map;
@@ -15,4 +14,5 @@ public interface WordMapper {
     int delete(Map<String, Object> data);
     int deleteByWordId(int wordId);
     int deleteByUserId(int userId);
+    List<Map<String, Object>> selectDateByUserId(int userId);
 }

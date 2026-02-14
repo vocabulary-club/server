@@ -19,4 +19,9 @@ public class TestController {
     public Object select() {
         return checkService.select();
     }
+
+    @GetMapping("/selectDate")
+    public Object selectDate() {
+        return checkService.selectDate();
+    }
 }

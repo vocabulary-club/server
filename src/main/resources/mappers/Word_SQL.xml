@@ -35,4 +35,12 @@
         delete from vocabulary.voc_word where user_id = #{userId};
     </delete>
 
+    <select id="selectDateByUserId" resultType="Map" parameterType="int">
+        date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
+        from vocabulary.voc_word w
+        where w.user_id = #{userId}
+        group by reg_ymd
+        order by reg_ymd desc;
+    </select>
+
 </mapper>

@@ -7,8 +7,8 @@
     </select>
 
     <insert id="insert" parameterType="web.server.api.entity.UserEntity">
-        INSERT INTO vocabulary.voc_user (username, name, email, role, picture)
-        VALUES (#{username}, #{name}, #{email}, #{role}, #{picture});
+        INSERT INTO vocabulary.voc_user (provider, username, password, name, email, role, picture)
+        VALUES (#{provider}, #{username}, #{password}, #{name}, #{email}, #{role}, #{picture});
     </insert>
 
     <update id="update" parameterType="web.server.api.entity.UserEntity">
@@ -18,8 +18,14 @@
     </update>
 
     <delete id="deleteByUsername" parameterType="String">
-        delete from vocabulary.voc_user
+        DELETE FROM vocabulary.voc_user
         WHERE username = #{username};
     </delete>
+
+    <select id="existsByUsername" resultType="int" parameterType="web.server.api.entity.UserEntity">
+        SELECT COUNT(1)
+        FROM vocabulary.voc_user
+        WHERE provider = #{provider} and username = #{username}
+    </select>
     
 </mapper>

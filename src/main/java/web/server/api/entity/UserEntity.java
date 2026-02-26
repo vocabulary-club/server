@@ -13,7 +13,9 @@ import java.util.Map;
 public class UserEntity {
 
     private int userId;
+    private String provider;
     private String username;
+    private String password;
     private String name;
     private String email;
     private String role;

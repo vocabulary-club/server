@@ -13,4 +13,6 @@ public interface UserMapper {
     int update(UserEntity entity);
 
     int deleteByUsername(String username);
+
+    int existsByUsername(UserEntity entity);
 }

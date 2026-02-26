@@ -71,6 +71,7 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService {
         if(userEntity == null) {
 
             userEntity = new UserEntity();
+            userEntity.setProvider(registrationId);
             userEntity.setUsername(username);
             userEntity.setName(name);
             userEntity.setEmail(email);

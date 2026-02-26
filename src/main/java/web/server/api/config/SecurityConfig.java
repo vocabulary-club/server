@@ -6,9 +6,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.HttpStatusEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -17,12 +20,14 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import web.server.api.jwt.JwtUtil;
 import web.server.api.jwt.MyJwtFilter;
+import web.server.api.jwt.MyLoginFilter;
 import web.server.api.jwt.MyLogoutFilter;
 import web.server.api.jwt.MyLogoutHelper;
 import web.server.api.oauth2.MyClientRegistrationRepository;
 import web.server.api.oauth2.MyOAuth2AuthorizedClientService;
 import web.server.api.oauth2.MySuccessHandler;
 import web.server.api.service.MyOAuth2UserService;
+import web.server.api.service.SecretService;
 import web.server.api.service.TokenService;
 
 import java.util.Collections;
@@ -46,6 +51,9 @@ public class SecurityConfig {
     private final MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService;
     private final JdbcTemplate jdbcTemplate;
 
+    private final AuthenticationConfiguration authenticationConfiguration;
+    private final SecretService secretService;
+
     public SecurityConfig(
             // token related
             JwtUtil jwtUtil,
@@ -57,7 +65,10 @@ public class SecurityConfig {
             // social client registration
             MyClientRegistrationRepository myClientRegistrationRepository,
             MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService,
-            JdbcTemplate jdbcTemplate) {
+            JdbcTemplate jdbcTemplate,
+            // local authentication
+            AuthenticationConfiguration authenticationConfiguration,
+            SecretService secretService) {
 
         this.jwtUtil = jwtUtil;
         this.tokenService = tokenService;
@@ -69,6 +80,19 @@ public class SecurityConfig {
         this.myClientRegistrationRepository = myClientRegistrationRepository;
         this.myOAuth2AuthorizedClientService = myOAuth2AuthorizedClientService;
         this.jdbcTemplate = jdbcTemplate;
+
+        this.authenticationConfiguration = authenticationConfiguration;
+        this.secretService = secretService;
+    }
+
+    @Bean
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration configuration) throws Exception {
+        return configuration.getAuthenticationManager();
+    }
+
+    @Bean
+    public BCryptPasswordEncoder bCryptoPasswordEncoder() {
+        return new BCryptPasswordEncoder();
     }
 
     @Bean
@@ -119,9 +143,16 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
                 .requestMatchers("/token/renew").permitAll()
+                .requestMatchers("/join").permitAll()
                 .anyRequest().authenticated());
 
-        http.addFilterAfter(new MyJwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAt(new MyLoginFilter(
+                authenticationManager(authenticationConfiguration),
+                jwtUtil,
+                tokenService,
+                secretService), UsernamePasswordAuthenticationFilter.class);
+
+        http.addFilterAfter(new MyJwtFilter(jwtUtil), MyLoginFilter.class);
 
         http.addFilterBefore(new MyLogoutFilter(myLogoutHelper), LogoutFilter.class);
 

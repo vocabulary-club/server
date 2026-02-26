@@ -78,7 +78,7 @@ public class MySuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
         // create client refresh-token
         Cookie cookie = new Cookie("refresh", newRefreshToken);
         cookie.setMaxAge(secretService.getJwtRefreshCookie());
-        //cookie.setSecure(true);	// use case is https
+        cookie.setSecure(true);	// use case is https
         cookie.setPath("/");		// Бүх эндпойнт дээр илгээгдэх
         cookie.setHttpOnly(true);	// cannot use cookie in java script
         response.addCookie(cookie);

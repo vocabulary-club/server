@@ -118,7 +118,7 @@ public class SecurityConfig {
 
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
-                .requestMatchers("/token/renew", "/privacy-policy", "/term-of-service").permitAll()
+                .requestMatchers("/token/renew").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterAfter(new MyJwtFilter(jwtUtil), UsernamePasswordAuthenticationFilter.class);

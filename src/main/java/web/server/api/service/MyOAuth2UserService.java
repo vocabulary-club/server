@@ -77,6 +77,7 @@ public class MyOAuth2UserService extends DefaultOAuth2UserService {
             userEntity.setEmail(email);
             userEntity.setPicture(pictureBytes);
             userEntity.setRole(role);
+            userEntity.setVerified('Y');
 
             userMapper.insert(userEntity);
         }

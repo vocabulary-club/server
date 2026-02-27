@@ -7,13 +7,13 @@
     </select>
 
     <insert id="insert" parameterType="web.server.api.entity.UserEntity">
-        INSERT INTO vocabulary.voc_user (provider, username, password, name, email, role, picture)
-        VALUES (#{provider}, #{username}, #{password}, #{name}, #{email}, #{role}, #{picture});
+        INSERT INTO vocabulary.voc_user (provider, username, password, name, email, role, picture, verified)
+        VALUES (#{provider}, #{username}, #{password}, #{name}, #{email}, #{role}, #{picture}, #{verified});
     </insert>
 
     <update id="update" parameterType="web.server.api.entity.UserEntity">
         UPDATE vocabulary.voc_user
-        SET name = #{name}, picture = #{picture}
+        SET name = #{name}, picture = #{picture}, updated_at = NOW()
         WHERE username = #{username};
     </update>
 

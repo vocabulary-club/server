@@ -23,9 +23,9 @@ import java.util.Collection;
 import java.util.Iterator;
 
 @Component
-public class MySuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
+public class MyOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
 
-    private static final Logger log = LoggerFactory.getLogger(MySuccessHandler.class);
+    private static final Logger log = LoggerFactory.getLogger(MyOAuth2SuccessHandler.class);
 
     private final JwtUtil jwtUtil;
     private final TokenService tokenService;
@@ -34,7 +34,7 @@ public class MySuccessHandler extends SimpleUrlAuthenticationSuccessHandler {
     @Value("${app.url}")
     private String appUrl;
 
-    public MySuccessHandler(
+    public MyOAuth2SuccessHandler(
             JwtUtil jwtUtil,
             TokenService tokenService,
     		SecretService secretService) {

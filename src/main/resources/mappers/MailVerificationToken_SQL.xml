@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="web.server.api.mapper.MailVerificationTokenMapper">
+
+	<select id="selectByToken" resultType="web.server.api.entity.MailVerificationTokenEntity" parameterType="String">
+        SELECT * FROM voc_mail_verfication_token WHERE token = #{token};
+    </select>
+    
+    <insert id="insert" parameterType="web.server.api.entity.MailVerificationTokenEntity">
+    	INSERT INTO voc_mail_verfication_token (token, expiration)
+			VALUES (#{token}, #{expiration});
+    </insert>
+    
+    <delete id="deleteExpiredTokens" parameterType="java.time.Instant">
+    	DELETE FROM voc_mail_verfication_token WHERE expiration &lt; #{expiration};
+    </delete>
+
+    <delete id="deleteByToken" parameterType="String">
+        DELETE FROM voc_mail_verfication_token WHERE token = #{token};
+    </delete>
+    
+</mapper>

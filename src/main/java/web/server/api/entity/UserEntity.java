@@ -20,6 +20,7 @@ public class UserEntity {
     private String email;
     private String role;
     private byte[] picture;
+    private char verified;
 
     public UserDTO getUserDTO() {
 

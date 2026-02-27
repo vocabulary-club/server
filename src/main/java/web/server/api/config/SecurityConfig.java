@@ -25,7 +25,7 @@ import web.server.api.jwt.MyLogoutFilter;
 import web.server.api.jwt.MyLogoutHelper;
 import web.server.api.oauth2.MyClientRegistrationRepository;
 import web.server.api.oauth2.MyOAuth2AuthorizedClientService;
-import web.server.api.oauth2.MySuccessHandler;
+import web.server.api.oauth2.MyOAuth2SuccessHandler;
 import web.server.api.service.MyOAuth2UserService;
 import web.server.api.service.SecretService;
 import web.server.api.service.TokenService;
@@ -45,7 +45,7 @@ public class SecurityConfig {
     private final MyLogoutHelper myLogoutHelper;
 
     private final MyOAuth2UserService myOAuth2UserService;
-    private final MySuccessHandler mySuccessHandler;
+    private final MyOAuth2SuccessHandler myOAuth2SuccessHandler;
 
     private final MyClientRegistrationRepository myClientRegistrationRepository;
     private final MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService;
@@ -61,7 +61,7 @@ public class SecurityConfig {
             MyLogoutHelper myLogoutHelper,
             // oauth2 related
             MyOAuth2UserService myOAuth2UserService,
-            MySuccessHandler mySuccessHandler,
+            MyOAuth2SuccessHandler myOAuth2SuccessHandler,
             // social client registration
             MyClientRegistrationRepository myClientRegistrationRepository,
             MyOAuth2AuthorizedClientService myOAuth2AuthorizedClientService,
@@ -75,7 +75,7 @@ public class SecurityConfig {
         this.myLogoutHelper = myLogoutHelper;
 
         this.myOAuth2UserService = myOAuth2UserService;
-        this.mySuccessHandler = mySuccessHandler;
+        this.myOAuth2SuccessHandler = myOAuth2SuccessHandler;
 
         this.myClientRegistrationRepository = myClientRegistrationRepository;
         this.myOAuth2AuthorizedClientService = myOAuth2AuthorizedClientService;
@@ -129,7 +129,7 @@ public class SecurityConfig {
                 .authorizedClientService(myOAuth2AuthorizedClientService.oAuth2AuthorizedClientService(jdbcTemplate,
                         myClientRegistrationRepository.clientRegistrationRepository()))
                 .userInfoEndpoint((config) -> config.userService(myOAuth2UserService))
-                .successHandler(mySuccessHandler)
+                .successHandler(myOAuth2SuccessHandler)
                 // ADD THIS: Point the login page to something that doesn't exist
                 // or your React login route to stop the auto-generation
                 .loginPage(appUrl + "/login")

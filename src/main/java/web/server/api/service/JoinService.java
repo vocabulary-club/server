@@ -59,11 +59,11 @@ public class JoinService {
             String username = dto.getUsername();
             String token = MailVerificationUtility.generateToken();
 
-            MailVerificationEntity tokenEntity = new MailVerificationEntity();
-            tokenEntity.setUsername(username);
-            tokenEntity.setToken(token);
-            tokenEntity.setExpiration(Instant.now().plusMillis(secretService.getMailVerificationTokenExpire()));
-            mailVerificationService.insert(tokenEntity);
+            MailVerificationEntity entity = new MailVerificationEntity();
+            entity.setUsername(username);
+            entity.setToken(token);
+            entity.setExpiration(Instant.now().plusMillis(secretService.getMailVerificationTokenExpire()));
+            mailVerificationService.insert(entity);
 
             String url = appUrl + "/verify?token=" + token;
 

@@ -53,4 +53,12 @@ public class MailVerificationController {
             mapper.writeValue(response.getWriter(), responseBody);
         }
     }
+
+    @PostMapping("/resend")
+    public void resend(@RequestBody Map<String, Object> data) {
+
+        String username = data.get("username").toString();
+
+        mailVerificationService.resend(username);
+    }
 }

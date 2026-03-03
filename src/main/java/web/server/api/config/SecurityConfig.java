@@ -143,7 +143,7 @@ public class SecurityConfig {
         http.authorizeHttpRequests((auth) -> auth
                 .requestMatchers("/login/**", "/oauth2/**").permitAll()
                 .requestMatchers("/token/renew").permitAll()
-                .requestMatchers("/join", "/verify").permitAll()
+                .requestMatchers("/join", "/verify", "/resend").permitAll()
                 .anyRequest().authenticated());
 
         http.addFilterAt(new MyLoginFilter(

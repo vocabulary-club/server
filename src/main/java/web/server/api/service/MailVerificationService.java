@@ -4,13 +4,17 @@ import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
+import web.server.api.dto.JoinDTO;
 import web.server.api.entity.MailVerificationEntity;
 import web.server.api.entity.TokenEntity;
+import web.server.api.entity.UserEntity;
 import web.server.api.jwt.JwtUtil;
 import web.server.api.mapper.MailVerificationMapper;
 import web.server.api.mapper.UserMapper;
+import web.server.api.utility.MailVerificationUtility;
 
 import java.time.Instant;
 
@@ -27,12 +31,18 @@ public class MailVerificationService {
     private final TokenService tokenService;
     private final SecretService secretService;
 
+    private final MailService mailService;
+
+    @Value("${app.url}")
+    private String appUrl;
+
     public MailVerificationService(
             MailVerificationMapper mailVerificationMapper,
             UserMapper userMapper,
             JwtUtil jwtUtil,
             TokenService tokenService,
-            SecretService secretService) {
+            SecretService secretService,
+            MailService mailService) {
 
         this.mailVerificationMapper = mailVerificationMapper;
         this.userMapper = userMapper;
@@ -40,6 +50,8 @@ public class MailVerificationService {
         this.jwtUtil = jwtUtil;
         this.tokenService = tokenService;
         this.secretService = secretService;
+
+        this.mailService = mailService;
     }
 
     public MailVerificationEntity selectByToken(String token) {
@@ -103,5 +115,27 @@ public class MailVerificationService {
         log.info("tokens are created successfully");
 
         return true;
+    }
+
+    public void resend(String username) {
+
+        UserEntity userEntity = userMapper.selectByUsername(username);
+
+        String email = userEntity.getEmail();
+        String token = MailVerificationUtility.generateToken();
+
+        MailVerificationEntity entity = new MailVerificationEntity();
+        entity.setUsername(username);
+        entity.setToken(token);
+        entity.setExpiration(Instant.now().plusMillis(secretService.getMailVerificationTokenExpire()));
+        mailVerificationMapper.insert(entity);
+
+        String url = appUrl + "/verify?token=" + token;
+
+        mailService.sendMail(
+                email,
+                "[SHINE-UG] Mail Verification",
+                url
+        );
     }
 }

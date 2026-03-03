@@ -6,21 +6,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import web.server.api.entity.MailVerificationTokenEntity;
+import web.server.api.entity.MailVerificationEntity;
 import web.server.api.entity.TokenEntity;
 import web.server.api.jwt.JwtUtil;
-import web.server.api.mapper.MailVerificationTokenMapper;
+import web.server.api.mapper.MailVerificationMapper;
 import web.server.api.mapper.UserMapper;
 
-import java.io.IOException;
 import java.time.Instant;
 
 @Service
-public class MailVerificationTokenService {
+public class MailVerificationService {
 
-    private static final Logger log = LoggerFactory.getLogger(MailVerificationTokenService.class);
+    private static final Logger log = LoggerFactory.getLogger(MailVerificationService.class);
 
-    private final MailVerificationTokenMapper tokenMapper;
+    private final MailVerificationMapper mailVerificationMapper;
     private final UserMapper userMapper;
 
     private final JwtUtil jwtUtil;
@@ -28,14 +27,14 @@ public class MailVerificationTokenService {
     private final TokenService tokenService;
     private final SecretService secretService;
 
-    public MailVerificationTokenService(
-            MailVerificationTokenMapper tokenMapper,
+    public MailVerificationService(
+            MailVerificationMapper mailVerificationMapper,
             UserMapper userMapper,
             JwtUtil jwtUtil,
             TokenService tokenService,
             SecretService secretService) {
 
-        this.tokenMapper = tokenMapper;
+        this.mailVerificationMapper = mailVerificationMapper;
         this.userMapper = userMapper;
 
         this.jwtUtil = jwtUtil;
@@ -43,38 +42,38 @@ public class MailVerificationTokenService {
         this.secretService = secretService;
     }
 
-    public MailVerificationTokenEntity selectByToken(String token) {
-        return tokenMapper.selectByToken(token);
+    public MailVerificationEntity selectByToken(String token) {
+        return mailVerificationMapper.selectByToken(token);
     }
 
-    public int insert(MailVerificationTokenEntity entity) {
-        return tokenMapper.insert(entity);
+    public int insert(MailVerificationEntity entity) {
+        return mailVerificationMapper.insert(entity);
     }
 
     @Scheduled(fixedRate = 180000)
     public void deleteExpiredTokens() {
     	Instant expiration = Instant.now();
         log.info("DB mail verification token check time: " + expiration);
-        tokenMapper.deleteExpiredTokens(expiration);
+        mailVerificationMapper.deleteExpiredTokens(expiration);
     }
 
     public int deleteByToken(String token) {
-        return tokenMapper.deleteByToken(token);
+        return mailVerificationMapper.deleteByToken(token);
     }
 
     public boolean verify(
             String token,
             HttpServletResponse response) {
 
-        MailVerificationTokenEntity mailVerificationTokenEntity = tokenMapper.selectByToken(token);
+        MailVerificationEntity mailVerificationEntity = mailVerificationMapper.selectByToken(token);
 
-        if (mailVerificationTokenEntity == null) {
+        if (mailVerificationEntity == null) {
             return false;
         }
 
-        String username = mailVerificationTokenEntity.getUsername();
+        String username = mailVerificationEntity.getUsername();
 
-        tokenMapper.deleteByUsername(username);
+        mailVerificationMapper.deleteByUsername(username);
 
         userMapper.verify(username);
 

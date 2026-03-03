@@ -3,9 +3,9 @@ package web.server.api.utility;
 import java.security.SecureRandom;
 import java.util.Base64;
 
-public class MailVerificationTokenUtility {
+public class MailVerificationUtility {
 
-    public static String generate() {
+    public static String generateToken() {
 
         SecureRandom secureRandom = new SecureRandom();
         byte[] bytes = new byte[32]; // 256-bit token

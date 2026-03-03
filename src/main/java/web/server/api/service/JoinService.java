@@ -1,12 +1,13 @@
 package web.server.api.service;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import web.server.api.dto.JoinDTO;
-import web.server.api.entity.MailVerificationTokenEntity;
+import web.server.api.entity.MailVerificationEntity;
 import web.server.api.entity.UserEntity;
 import web.server.api.mapper.UserMapper;
-import web.server.api.utility.MailVerificationTokenUtility;
+import web.server.api.utility.MailVerificationUtility;
 
 import java.time.Instant;
 
@@ -16,20 +17,23 @@ public class JoinService {
     private final UserMapper userMapper;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
 
-    private final MailVerificationTokenService mailVerificationTokenService;
+    private final MailVerificationService mailVerificationService;
     private final SecretService secretService;
 
     private final MailService mailService;
 
+    @Value("${app.url}")
+    private String appUrl;
+
     public JoinService(UserMapper userMapper,
                        BCryptPasswordEncoder bCryptPasswordEncoder,
-                       MailVerificationTokenService mailVerificationTokenService,
+                       MailVerificationService mailVerificationService,
                        SecretService secretService,
                        MailService mailService) {
 
         this.userMapper = userMapper;
         this.bCryptPasswordEncoder = bCryptPasswordEncoder;
-        this.mailVerificationTokenService = mailVerificationTokenService;
+        this.mailVerificationService = mailVerificationService;
         this.secretService = secretService;
         this.mailService = mailService;
     }
@@ -53,19 +57,20 @@ public class JoinService {
         if(result > 0) {
 
             String username = dto.getUsername();
-            String token = MailVerificationTokenUtility.generate();
+            String token = MailVerificationUtility.generateToken();
 
-            MailVerificationTokenEntity tokenEntity = new MailVerificationTokenEntity();
+            MailVerificationEntity tokenEntity = new MailVerificationEntity();
             tokenEntity.setUsername(username);
             tokenEntity.setToken(token);
             tokenEntity.setExpiration(Instant.now().plusMillis(secretService.getMailVerificationTokenExpire()));
-            mailVerificationTokenService.insert(tokenEntity);
+            mailVerificationService.insert(tokenEntity);
+
+            String url = appUrl + "/verify?token=" + token;
 
             mailService.sendMail(
                     dto.getEmail(),
                     "[SHINE-UG] Mail Verification",
-                    //"https://www.shineug.com/verify?token=" + token
-                    "https://localhost:8443/verify?token=" + token
+                    url
             );
         }
     }

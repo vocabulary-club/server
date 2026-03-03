@@ -29,7 +29,8 @@ public class TokenService {
         return tokenMapper.insert(entity);
     }
 
-    @Scheduled(fixedRate = 60000)
+    // 1 hour
+    @Scheduled(fixedRate = 3600000)
     public void deleteExpiredTokens() {
     	Instant expiration = Instant.now();
         log.info("DB token check time: " + expiration);

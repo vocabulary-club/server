@@ -25,10 +25,7 @@ import web.server.api.service.TokenService;
 
 import java.io.IOException;
 import java.time.Instant;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
+import java.util.*;
 
 public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
 
@@ -110,9 +107,17 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
             return;
         }
 
+        // IP
+        String ipAddress = Optional.ofNullable(request.getHeader("X-Forwarded-For"))
+                .map(ip -> ip.split(",")[0])
+                .orElse(request.getRemoteAddr());
+
+        // Device ID
+        String deviceId = UUID.randomUUID().toString();
+
         String username = userDetails.getUsername();
 
-        tokenService.deleteByUsername(username);
+        //tokenService.deleteByUsername(username);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();

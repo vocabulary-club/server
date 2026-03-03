@@ -56,7 +56,7 @@ public class MyOAuth2SuccessHandler extends SimpleUrlAuthenticationSuccessHandle
 
         String username = myOAuth2User.getName();
 
-        tokenService.deleteByUsername(username);
+        //tokenService.deleteByUsername(username);
 
         Collection<? extends GrantedAuthority> authorities = authentication.getAuthorities();
         Iterator<? extends GrantedAuthority> iterator = authorities.iterator();

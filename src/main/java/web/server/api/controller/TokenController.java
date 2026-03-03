@@ -86,7 +86,7 @@ public class TokenController {
         String newRefreshToken = jwtUtil.createJwt("refresh", username, role, secretService.getJwtRefresh());
 
         // rotate refresh token
-        tokenService.deleteByUsername(username);
+        //tokenService.deleteByUsername(username);
         tokenEntity = new TokenEntity();
         tokenEntity.setUsername(username);
         tokenEntity.setToken(newRefreshToken);

@@ -7,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
-import web.server.api.dto.JoinDTO;
 import web.server.api.entity.MailVerificationEntity;
 import web.server.api.entity.TokenEntity;
 import web.server.api.entity.UserEntity;
@@ -62,7 +61,8 @@ public class MailVerificationService {
         return mailVerificationMapper.insert(entity);
     }
 
-    @Scheduled(fixedRate = 180000)
+    // 1 hour
+    @Scheduled(fixedRate = 3600000)
     public void deleteExpiredTokens() {
     	Instant expiration = Instant.now();
         log.info("DB mail verification token check time: " + expiration);
@@ -90,6 +90,8 @@ public class MailVerificationService {
         userMapper.verify(username);
 
         log.info(username + " mail is verified");
+
+        //tokenService.deleteByUsername(username);
 
         String role = "ROLE_USER";
 

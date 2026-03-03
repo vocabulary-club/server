@@ -7,8 +7,8 @@
     </select>
     
     <insert id="insert" parameterType="web.server.api.entity.MailVerificationTokenEntity">
-    	INSERT INTO voc_mail_verfication_token (token, expiration)
-			VALUES (#{token}, #{expiration});
+        INSERT INTO voc_mail_verfication_token (username, token, expiration)
+            VALUES (#{username}, #{token}, #{expiration});
     </insert>
     
     <delete id="deleteExpiredTokens" parameterType="java.time.Instant">
@@ -17,6 +17,10 @@
 
     <delete id="deleteByToken" parameterType="String">
         DELETE FROM voc_mail_verfication_token WHERE token = #{token};
+    </delete>
+
+    <delete id="deleteByUsername" parameterType="String">
+        DELETE FROM voc_mail_verfication_token WHERE username = #{username};
     </delete>
     
 </mapper>

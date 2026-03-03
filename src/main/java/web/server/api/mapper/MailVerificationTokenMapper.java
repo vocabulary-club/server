@@ -16,4 +16,6 @@ public interface MailVerificationTokenMapper {
     int deleteExpiredTokens(Instant expiration);
 
     int deleteByToken(String token);
+
+    int deleteByUsername(String username);
 }

@@ -52,9 +52,11 @@ public class JoinService {
         int result = userMapper.insert(userEntity);
         if(result > 0) {
 
+            String username = dto.getUsername();
             String token = MailVerificationTokenUtility.generate();
 
             MailVerificationTokenEntity tokenEntity = new MailVerificationTokenEntity();
+            tokenEntity.setUsername(username);
             tokenEntity.setToken(token);
             tokenEntity.setExpiration(Instant.now().plusMillis(secretService.getMailVerificationTokenExpire()));
             mailVerificationTokenService.insert(tokenEntity);
@@ -62,7 +64,8 @@ public class JoinService {
             mailService.sendMail(
                     dto.getEmail(),
                     "[SHINE-UG] Mail Verification",
-                    "https://www.shineug.com/verify?token=" + token
+                    //"https://www.shineug.com/verify?token=" + token
+                    "https://localhost:8443/verify?token=" + token
             );
         }
     }

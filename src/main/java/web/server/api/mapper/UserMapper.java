@@ -15,4 +15,6 @@ public interface UserMapper {
     int deleteByUsername(String username);
 
     int existsByUsername(UserEntity entity);
+
+    int verify(String username);
 }

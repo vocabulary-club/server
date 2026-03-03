@@ -9,6 +9,7 @@ import java.time.Instant;
 @Getter
 public class MailVerificationTokenEntity {
 
+    private String username;
     private String token;
     private Instant expiration;
 }

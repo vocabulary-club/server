@@ -27,5 +27,11 @@
         FROM vocabulary.voc_user
         WHERE provider = #{provider} and username = #{username}
     </select>
+
+    <update id="verify" parameterType="String">
+        UPDATE vocabulary.voc_user
+        SET verified = 'Y'
+        WHERE username = #{username};
+    </update>
     
 </mapper>

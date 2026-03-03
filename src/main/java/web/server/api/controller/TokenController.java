@@ -87,6 +87,7 @@ public class TokenController {
 
         // rotate refresh token
         //tokenService.deleteByUsername(username);
+        tokenService.deleteByToken(clientRefreshToken);
         tokenEntity = new TokenEntity();
         tokenEntity.setUsername(username);
         tokenEntity.setToken(newRefreshToken);

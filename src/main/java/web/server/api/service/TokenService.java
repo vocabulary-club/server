@@ -8,6 +8,7 @@ import web.server.api.entity.TokenEntity;
 import web.server.api.mapper.TokenMapper;
 
 import java.time.Instant;
+import java.util.List;
 
 @Service
 public class TokenService {
@@ -22,7 +23,14 @@ public class TokenService {
     }
 
     public TokenEntity selectByToken(String token) {
-        return tokenMapper.selectByToken(token);
+
+        List<TokenEntity> tokens = tokenMapper.selectByToken(token);
+
+        if (tokens == null || tokens.isEmpty()) {
+            return null;
+        }
+
+        return tokens.get(0);
     }
 
     public int insert(TokenEntity entity) {

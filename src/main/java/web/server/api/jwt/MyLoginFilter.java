@@ -17,6 +17,7 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import tools.jackson.databind.ObjectMapper;
+import web.server.api.common.ErrorCode;
 import web.server.api.dto.MyUserDetails;
 import web.server.api.entity.TokenEntity;
 import web.server.api.service.SecretService;
@@ -25,6 +26,7 @@ import web.server.api.service.TokenService;
 import java.io.IOException;
 import java.time.Instant;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -91,6 +93,23 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
 
         MyUserDetails userDetails = (MyUserDetails) authentication.getPrincipal();
 
+        char verified = userDetails.getVerified();
+
+        if (verified == 'N') {
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+            ErrorCode error = ErrorCode.MAIL_NOT_VERIFIED;
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("error", error.name());
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getWriter(), responseBody);
+
+            return;
+        }
+
         String username = userDetails.getUsername();
 
         tokenService.deleteByUsername(username);
@@ -128,8 +147,17 @@ public class MyLoginFilter extends UsernamePasswordAuthenticationFilter {
     @Override
     protected void unsuccessfulAuthentication(HttpServletRequest request,
                                               HttpServletResponse response,
-                                              AuthenticationException failed) {
+                                              AuthenticationException failed) throws IOException {
         log.info("authentication is failed");
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+        ErrorCode error = ErrorCode.AUTHENTICATION_FAILED;
+
+        Map<String, Object> responseBody = new HashMap<>();
+        responseBody.put("error", error.name());
+
+        ObjectMapper mapper = new ObjectMapper();
+        mapper.writeValue(response.getWriter(), responseBody);
     }
 }

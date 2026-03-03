@@ -34,6 +34,11 @@ public class MyUserDetails implements UserDetails {
         return collection;
     }
 
+    public char getVerified() {
+
+        return userEntity.getVerified();
+    }
+
     @Override
     public String getPassword() {
 

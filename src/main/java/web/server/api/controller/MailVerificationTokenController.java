@@ -5,11 +5,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import tools.jackson.databind.ObjectMapper;
+import web.server.api.common.ErrorCode;
 import web.server.api.service.MailVerificationTokenService;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -29,17 +33,26 @@ public class MailVerificationTokenController {
     }
 
     @PostMapping("/verify")
-    public ResponseEntity<?> verify(
+    public void verify(
             @RequestBody Map<String, Object> data,
-            HttpServletResponse response) {
+            HttpServletResponse response) throws IOException {
 
         String token = data.get("token").toString();
         boolean success = tokenService.verify(token, response);
 
         if (success) {
-            return new ResponseEntity<>("Email verified successfully!", HttpStatus.OK);
+            response.setStatus(HttpServletResponse.SC_OK);
         } else {
-            return new ResponseEntity<>("Verification failed or token expired.", HttpStatus.UNAUTHORIZED);
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+
+            ErrorCode error = ErrorCode.MAIL_NOT_VERIFIED;
+
+            Map<String, Object> responseBody = new HashMap<>();
+            responseBody.put("error", error.name());
+
+            ObjectMapper mapper = new ObjectMapper();
+            mapper.writeValue(response.getWriter(), responseBody);
         }
     }
 }

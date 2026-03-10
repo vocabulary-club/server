@@ -8,36 +8,36 @@
             date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
             date_format(w.reg_date, '%m-%d') as reg_md,
             m.mean_id, m.definition, m.seq
-        from vocabulary.voc_word w
-        left join vocabulary.voc_mean m on (w.word_id = m.word_id)
+        from shineug.vc_word w
+        left join shineug.vc_mean m on (w.word_id = m.word_id)
         where w.user_id = #{userId}
         order by w.reg_date desc, w.word_id desc;
     </select>
 
     <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="wordId">
-        insert into vocabulary.voc_word (word, user_id)
+        insert into shineug.vc_word (word, user_id)
         values(#{word}, #{userId})
     </insert>
 
     <update id="update" parameterType="map">
-        update vocabulary.voc_word set word = #{word} where word_id = #{wordId};
+        update shineug.vc_word set word = #{word} where word_id = #{wordId};
     </update>
 
     <delete id="delete" parameterType="map">
-        delete from vocabulary.voc_word where word_id = #{wordId};
+        delete from shineug.vc_word where word_id = #{wordId};
     </delete>
 
     <delete id="deleteByWordId" parameterType="int">
-        delete from vocabulary.voc_word where word_id = #{wordId};
+        delete from shineug.vc_word where word_id = #{wordId};
     </delete>
 
     <delete id="deleteByUserId" parameterType="int">
-        delete from vocabulary.voc_word where user_id = #{userId};
+        delete from shineug.vc_word where user_id = #{userId};
     </delete>
 
     <select id="selectDateByUserId" resultType="Map" parameterType="int">
         date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
-        from vocabulary.voc_word w
+        from shineug.vc_word w
         where w.user_id = #{userId}
         group by reg_ymd
         order by reg_ymd desc;

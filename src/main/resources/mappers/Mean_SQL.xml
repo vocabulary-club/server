@@ -8,27 +8,27 @@
             w.word_id, w.word,
             date_format(w.reg_date, '%Y-%m-%d') as reg_ymd,
             date_format(w.reg_date, '%m-%d') as reg_md
-        from vocabulary.voc_mean m
-        left join vocabulary.voc_word w on (w.word_id = m.word_id)
+        from shineug.vc_mean m
+        left join shineug.vc_word w on (w.word_id = m.word_id)
         where w.user_id = #{userId}
         order by w.reg_date desc, m.mean_id desc;
     </select>
 
     <insert id="insert" parameterType="map" useGeneratedKeys="true" keyProperty="meanId">
-        insert into vocabulary.voc_mean (word_id, definition)
+        insert into shineug.vc_mean (word_id, definition)
         values(#{wordId}, #{definition})
     </insert>
 
     <update id="update" parameterType="map">
-        update vocabulary.voc_mean set definition = #{definition} where mean_id = #{meanId} and word_id = #{wordId};
+        update shineug.vc_mean set definition = #{definition} where mean_id = #{meanId} and word_id = #{wordId};
     </update>
 
     <delete id="delete" parameterType="map">
-        delete from vocabulary.voc_mean where mean_id = #{meanId};
+        delete from shineug.vc_mean where mean_id = #{meanId};
     </delete>
 
     <delete id="deleteByMeanId" parameterType="int">
-        delete from vocabulary.voc_mean where mean_id = #{meanId};
+        delete from shineug.vc_mean where mean_id = #{meanId};
     </delete>
 
 </mapper>

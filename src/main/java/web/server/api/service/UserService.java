@@ -52,17 +52,17 @@ public class UserService {
             return 0;
         }
 
-        // 1. delete voc_word, voc_mean by user_id
+        // 1. delete vc_word, vc_mean by user_id
         manageService.deleteByUserId(entity.getUserId());
 
         // 2. delete oauth2_authorized_client by username = principal_name
         oauth2Mapper.deleteByUsername(username);
 
-        // 3. delete voc_token by username
+        // 3. delete vc_token by username
         // token will be deleted in MyLogoutHelder
         //tokenMapper.deleteByUsername(username);
 
-        // 4. delete voc_user by username
+        // 4. delete vc_user by username
         userMapper.deleteByUsername(username);
 
         // 5. logout in controller

@@ -3,24 +3,24 @@
 <mapper namespace="web.server.api.mapper.TokenMapper">
 
 	<select id="selectByToken" resultType="web.server.api.entity.TokenEntity" parameterType="String">
-        SELECT * FROM voc_token WHERE token = #{token};
+        SELECT * FROM vc_token WHERE token = #{token};
     </select>
     
     <insert id="insert" parameterType="web.server.api.entity.TokenEntity">
-    	INSERT INTO voc_token (username, token, expiration)
+    	INSERT INTO vc_token (username, token, expiration)
 			VALUES (#{username}, #{token}, #{expiration});
     </insert>
     
     <delete id="deleteExpiredTokens" parameterType="java.time.Instant">
-    	DELETE FROM voc_token WHERE expiration &lt; #{expiration};
+    	DELETE FROM vc_token WHERE expiration &lt; #{expiration};
     </delete>
 
     <delete id="deleteByToken" parameterType="String">
-        DELETE FROM voc_token WHERE token = #{token};
+        DELETE FROM vc_token WHERE token = #{token};
     </delete>
 
     <delete id="deleteByUsername" parameterType="String">
-        DELETE FROM voc_token WHERE username = #{username};
+        DELETE FROM vc_token WHERE username = #{username};
     </delete>
     
 </mapper>
